@@ -1,0 +1,20 @@
+// Dashboard
+.navbar.navbar-default.navbar-static-top(role='navigation')
+	.container.container-fluid
+		.navbar-header
+			button.navbar-toggle(type="button", data-toggle="collapse", data-target="#navbar-dash-mobile")
+				span.sr-only Toggle Navigation
+				span.icon-bar
+				span.icon-bar
+				span.icon-bar
+			a.navbar-brand(href='/') Arteest
+		#navbar-dash-mobile.navbar-collapse.collapse
+			ul.nav.navbar-nav
+				- var nav = {'draw':'Draw'}
+					- each val, key in nav
+						- if (id == key)
+							li.active
+								a(href='/#{key}') #{val}
+						- else
+							li
+								a(href='/#{key}') #{val}

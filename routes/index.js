@@ -4,7 +4,15 @@ var router = express.Router();
 // ----- Page Templates -----
 router.get('/', function(req, res) {
     res.render('index', {
-        title: 'Arteest' 
+        id: 'index',
+        title: 'Arteest'
+    });
+});
+
+router.get('/draw', function(req, res) {
+    res.render('draw', {
+        id: 'draw',
+        title: 'Arteest | Draw'
     });
 });
 

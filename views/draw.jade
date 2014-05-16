@@ -1,0 +1,14 @@
+extends layout
+
+block content
+	// Draw
+	.container
+		.jumbotron
+			h1 Draw Your 50!
+			#tools.btn-toolbar(role="toolbar")
+				.btn-group 
+					button#tool-clear.btn.btn-default(type="button", title="Clear")
+						span.glyphicon.glyphicon-fire
+					button#tool-play.btn.btn-default(type="button", title="Play")
+						span.glyphicon.glyphicon-play-circle
+			canvas#canvas.img-thumbnail(width="500", height="500")
