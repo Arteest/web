@@ -1,4 +1,4 @@
-// Include :) 
+// Module Declaration
 var express = require('express');
 var path = require('path');
 var favicon = require('static-favicon');
@@ -23,6 +23,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Underscore
+_ = require('underscore');
 
 // Set DB
 app.use(function(req, res, next) {
@@ -60,4 +63,14 @@ app.use(function(err, req, res, next) {
     });
 });
 
-module.exports = app;
+// <!-- bin/www Start -->
+// This configuration moved from bin/www.
+// To use <pre>npm start</pre> again, remove this snippet and uncomment the last line in this file.
+var debug = require('debug')('arteest');
+//var app = require('../app');
+app.set('port', process.env.PORT || 3000);
+var server = app.listen(app.get('port'), function() {
+    debug('Express server listening on port ' + server.address().port);
+});
+// <!-- bin/www End -->
+//module.exports = app;

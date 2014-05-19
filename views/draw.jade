@@ -3,12 +3,26 @@ extends layout
 block content
 	// Draw
 	.container
-		.jumbotron
-			h1 Draw Your 50!
-			#tools.btn-toolbar(role="toolbar")
-				.btn-group 
-					button#tool-clear.btn.btn-default(type="button", title="Clear")
-						span.glyphicon.glyphicon-fire
-					button#tool-play.btn.btn-default(type="button", title="Play")
-						span.glyphicon.glyphicon-play-circle
-			canvas#canvas.img-thumbnail(width="500", height="500")
+		.page-header
+			h1 Draw&nbsp;
+				small because you are an Arteest
+		#alerts(data-init-error=error)
+			.error.alert.alert-danger
+				strong.message
+			.success.alert.alert-success
+				strong.message
+		#tools.btn-toolbar(role="toolbar")
+			.btn-group 
+				button#tool-clear.btn.btn-default(type="button", title="Clear")
+					span.glyphicon.glyphicon-fire
+				button#tool-play.btn.btn-default(type="button", title="Play")
+					span.glyphicon.glyphicon-play-circle
+		canvas#canvas.img-thumbnail(width="300", height="300", data-init-strokes=data)
+		if data && data.name
+			#byline
+				small.text-muted By #{data.name}
+		#actions(role="actions")
+			.input-group
+				input#name.form-control(type="text", placeholder="Arteest Name")
+				span.input-group-btn
+					button#save.btn.btn-primary(type="button", title="Fin!") Fin!

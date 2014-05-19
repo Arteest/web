@@ -32,6 +32,19 @@
             base.reset();
             base.unlock();
             base.setupMouseEvents();
+
+            // Check for loading errors
+            var loadingError =  $('#alerts').data('init-error');
+            if(loadingError) {
+                $('#alerts .error .message').html(loadingError);
+                $('#alerts .error').show();
+            }
+
+            // Check if loading a canvas
+            if(base.$el.data('init-strokes') != null) {
+                base.strokes = base.$el.data('init-strokes').strokes;
+                base.play();
+            }
         };
 
         base.setupMouseEvents = function() {
@@ -81,8 +94,8 @@
                 base.context.moveTo(base.prev.x, base.prev.y);
                 base.context.lineTo(base.curr.x, base.curr.y);
             } else {
-                // On mousedown use current point as start of line
-                base.context.moveTo(base.curr.x, base.curr.y);
+                // On mousedown use current point as start of line (-1 pixel)
+                base.context.moveTo(base.curr.x-1, base.curr.y-1);
                 base.context.lineTo(base.curr.x, base.curr.y);
             }
 
@@ -121,22 +134,30 @@
 
         base.play = function() {
             if(base.isLocked()) return;
+            if(!base.strokes) return;
 
             base.lock();
             base.clear();
 
-            var i = 1;
+            var i = 0;
 
             var interval = setInterval(function(){
                 if(i >= base.strokes.length) {
                     clearInterval(interval);
                     base.unlock();
                 } else {
-                    base.prev = {x:base.strokes[i-1].x, y:base.strokes[i-1].y, d:base.strokes[i-1].d};
-                    base.curr = {x:base.strokes[i].x, y:base.strokes[i].y, d:base.strokes[i].d};
-                    base.redraw();
-                    i++;
+                    if(base.strokes[i].d.toString() === 'true') {
+                        base.prev = {x:base.strokes[i-1].x, y:base.strokes[i-1].y, d:base.strokes[i-1].d};
+                        base.curr = {x:base.strokes[i].x, y:base.strokes[i].y, d:base.strokes[i].d};
+                    } else {
+                        base.prev = {x:base.strokes[i].x-1, y:base.strokes[i].y-1, d:base.strokes[i].d};
+                        base.curr = {x:base.strokes[i].x, y:base.strokes[i].y, d:base.strokes[i].d};
+                    }
+
+                    base.redraw();                    
                 }
+
+                i++;
             }, 1000 / base.fps);   
         }
 
@@ -144,8 +165,8 @@
     };
 
     $.arteest.draw.defaultOptions = {
-        width: 500,
-        height: 500,
+        width: 300,
+        height: 300,
         context: null,
         tools: null
     };

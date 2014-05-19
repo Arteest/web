@@ -5,37 +5,88 @@ var router = express.Router();
 router.get('/', function(req, res) {
     res.render('index', {
         id: 'index',
-        title: 'Arteest'
+        title: 'Index'
     });
 });
 
 router.get('/draw', function(req, res) {
     res.render('draw', {
         id: 'draw',
-        title: 'Arteest | Draw'
+        title: 'Arteest | Draw',
+        error: 'false',
+        data: null
+    });
+});
+
+router.get('/draw/:id', function(req, res) {
+    var canvasesCollection = req.db.get('canvases');
+
+    canvasesCollection.findOne({_id: req.params.id}, function(err, doc) {
+        var error = null;
+
+        if(err) {
+            error = 'We could not load your artwork at this time.';
+        } else {
+            if(doc) {
+                error = null;
+            } else {
+                error = 'We could not load your artwork at this time.';
+            }
+        }
+
+        res.render('draw', {
+            id: 'draw',
+            title: 'Arteest | Draw',
+            error: error,
+            data: doc
+        });
+    });
+});
+
+router.get('/gallery', function(req, res) {
+    var canvasesCollection = req.db.get('canvases');
+
+    canvasesCollection.find({}, function(err, doc) {
+        var error = null;
+        var canvases = null;
+
+        if(err) {
+            error = 'We could not load the gallery at this time.';
+        } else {
+            if(doc) {
+                error = null;
+
+                canvases = _.groupBy(doc, 'name');
+            } else {
+                error = 'We could not load the gallery at this time.';
+            }
+        }
+
+        res.render('gallery', {
+            id: 'gallery',
+            title: 'Arteest | Gallery',
+            canvasesByName: canvases
+        });
     });
 });
 
 // ----- API -----
-router.post('/addasdf', function(req, res) {
-    var db = req.db;
+router.post('/save', function(req, res) {
+    var canvasesCollection = req.db.get('canvases');
 
-    var userName = req.body.username;
-    var userEmail = req.body.useremail;
+    var name = req.body.name;
+    var strokes = req.body.strokes;
 
-    var collection = db.get('usercollection');
-
-    collection.insert({
-        "username" : userName,
-        "email" : userEmail
-    }, function(err, doc) {
-        if (err) {
-            res.send("There was a problem adding the information to the database.");
+    canvasesCollection.insert({name: name, strokes: strokes}, function(err, doc) {
+        if(err) {
+            res.send({
+                error: 'We could not save your artwork at this time: ' + err
+            });
         } else {
-            // If it worked, set the header so the address bar doesn't still say /adduser
-            res.location("userlist");
-            // And forward to success page
-            res.redirect("userlist");
+            res.send({
+                success: true,
+                link: 'Your artwork has been saved! <a href="/draw/' + doc._id + '">View</a>'
+            });
         }
     });
 });

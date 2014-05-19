@@ -1,5 +1,18 @@
 module.exports = function(grunt) {
     grunt.initConfig({
+        develop: {
+            server: {
+                file: 'app.js',
+            }
+        },
+        shell: {
+            mongo: {
+                command: 'mongod',
+                options: {
+                    async: true
+                }
+            }
+        },
         less: {
             development: {
                 options: {
@@ -13,7 +26,15 @@ module.exports = function(grunt) {
             }
         },
         watch: {
-            styles: {
+            js: {
+                files: [
+                    'app.js',
+                    'routes/**/*.js'
+                ],
+                tasks: ['develop'],
+                options: { nospawn: true }
+            },
+            css: {
                 files: ['public/stylesheets/*.less'],
                 tasks: ['less'],
                 options: {
@@ -25,6 +46,7 @@ module.exports = function(grunt) {
             main: {
                 files: [
                     {cwd: 'bower_components/jquery/dist/', src: 'jquery.min.js', expand: 'true', dest: 'public/javascripts/'},
+                    {cwd: 'bower_components/jquery/dist/', src: 'jquery.min.map', expand: 'true', dest: 'public/javascripts/'},
                     {cwd: 'bower_components/bootstrap/dist/js/', src: 'bootstrap.min.js', expand: 'true', dest: 'public/javascripts/'},
                     {cwd: 'bower_components/bootstrap/dist/css/', src: 'bootstrap.min.css', expand: 'true', dest: 'public/stylesheets/'},
                     {cwd: 'bower_components/bootstrap/dist/css/', src: 'bootstrap-theme.min.css', expand: 'true', dest: 'public/stylesheets/'},
@@ -37,9 +59,11 @@ module.exports = function(grunt) {
         }
     });
  
+    grunt.loadNpmTasks('grunt-develop');
+    grunt.loadNpmTasks('grunt-shell-spawn');
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-copy');    
  
-    grunt.registerTask('default', ['copy', 'watch']);
+    grunt.registerTask('default', ['develop', 'shell', 'copy', 'watch']);
 };

@@ -10,4 +10,9 @@ $(document).ready(function() {
 	$('#tools').arteest_tools({
 		canvas: canvas
 	});
+
+	// Actions
+	$('#actions').arteest_actions({
+		canvas: canvas
+	});
 });
