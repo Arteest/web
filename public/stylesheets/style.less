@@ -1,16 +1,33 @@
-#canvas {
-	background-color:#fff;
+#canvases {
+	.canvas {
+		vertical-align:top;
+		padding:0;
 
-	&.draw {
-		cursor:crosshair;
-	}
+		canvas {
+			background-color:#fff;
+			border:1px solid #ddd;	
 
-	&.wait {
-		cursor:wait;
+			&.template {
+				display:none;
+			}
+
+			&.draw {
+				cursor:crosshair;
+			}
+
+			&.wait {
+				cursor:wait;
+			}
+
+			&.read-only {
+				cursor:not-allowed;
+			}
+		}
 	}
 }
 
 #tools {
+	margin-top:20px;
 	margin-bottom:20px;
 }
 

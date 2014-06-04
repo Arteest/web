@@ -1,26 +1,39 @@
 extends layout
 
+mixin canvas(canvas)
+	li.canvas
+		canvas(width="300", height="300", class!=attributes.class, data-canvas=canvas)
+		if canvas && canvas.name
+			#byline
+				small.text-muted By #{canvas.name}
+
 block content
 	// Draw
 	.container
 		.page-header
 			h1 Draw&nbsp;
-				small because you are an Arteest
-		#alerts(data-init-error=error)
+				small just because
+		#alerts(data-error=error)
 			.error.alert.alert-danger
 				strong.message
 			.success.alert.alert-success
 				strong.message
 		#tools.btn-toolbar(role="toolbar")
 			.btn-group 
-				button#tool-clear.btn.btn-default(type="button", title="Clear")
+				button#tool-clear.btn.btn-default(type="button", data-toggle="tooltip", data-placement="top", title="Clear the canvas")
 					span.glyphicon.glyphicon-fire
-				button#tool-play.btn.btn-default(type="button", title="Play")
+				button#tool-play.btn.btn-default(type="button", data-toggle="tooltip", data-placement="top", title="Play your drawing")
 					span.glyphicon.glyphicon-play-circle
-		canvas#canvas.img-thumbnail(width="300", height="300", data-init-strokes=data)
-		if data && data.name
-			#byline
-				small.text-muted By #{data.name}
+			if canvases.length
+				.btn-group
+					button#add.btn.btn-primary(type="button", title="Add to this Drawing") Add to this Drawing!
+		ul#canvases.list-inline
+			if canvases.length
+				each canvas in canvases
+					+canvas(canvas)
+				+canvas(null)(class="template")
+			else
+				+canvas(null)
 		#actions(role="actions")
 			.input-group
 				input#name.form-control(type="text", placeholder="Arteest Name")

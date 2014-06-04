@@ -37,6 +37,8 @@
                 var tool = this;
 
                 base.$el.find(tool.key).each(function() {
+                    $(this).tooltip({container: 'body'});
+
                     $(this).click(function() {                        
                         tool.exe.call(base);
                     });

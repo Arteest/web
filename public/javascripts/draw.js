@@ -22,34 +22,44 @@
 
             // Initialize canvas logic variables
             base.locked = false;
+            base.readOnly = false;
             base.fps = 30;
             base.cursor = {
                 draw: 'draw',
-                wait: 'wait'
+                wait: 'wait',
+                readOnly: 'read-only'
             }
 
-            // Star with a clean canvas
+            // Reset all recorded actions on canvas
             base.reset();
-            base.unlock();
-            base.setupMouseEvents();
-
-            // Check for loading errors
-            var loadingError =  $('#alerts').data('init-error');
-            if(loadingError) {
-                $('#alerts .error .message').html(loadingError);
-                $('#alerts .error').show();
-            }
 
             // Check if loading a canvas
-            if(base.$el.data('init-strokes') != null) {
-                base.strokes = base.$el.data('init-strokes').strokes;
-                base.play();
+            if(base.$el.data('canvas') != null) {
+                base.strokes = base.$el.data('canvas').strokes;
+                base.setReadOnly();
+                base.play(true);
+            } else {
+                // Star with a clean canvas
+                base.unlock();
+
+                // Setup drawing capabilities
+                base.setupMouseEvents();
+
+                // Setup tools
+                $('#tools').arteest_tools({
+                    canvas: base.el
+                });
+
+                // Setup actions
+                $('#actions').arteest_actions({
+                    canvas: base.el
+                });
             }
         };
 
         base.setupMouseEvents = function() {
 			base.$el.mousedown(function(e) {
-                if(base.isLocked()) return;
+                if(base.isLocked()) return false;
 
   				var x = e.pageX - this.offsetLeft;
   				var y = e.pageY - this.offsetTop;
@@ -60,7 +70,7 @@
 			});
 
 			base.$el.mousemove(function(e){
-                if(base.isLocked()) return;
+                if(base.isLocked()) return false;
 
                 var x = e.pageX - this.offsetLeft;
                 var y = e.pageY - this.offsetTop;
@@ -103,36 +113,47 @@
             base.context.stroke();
 		};
 
+        base.setReadOnly = function() {
+            base.readOnly = true;
+            base.$el.removeClass(base.cursor.draw);
+            base.$el.removeClass(base.cursor.wait);
+            base.$el.addClass(base.cursor.readOnly);
+        };
+
+        base.isReadOnly = function() {
+            return base.readOnly;
+        };
+
         base.lock = function() {
             base.locked = true;
             base.$el.removeClass(base.cursor.draw);
             base.$el.addClass(base.cursor.wait);
-        }
+        };
 
         base.unlock = function() {
             base.locked = false;
             base.$el.removeClass(base.cursor.wait);
             base.$el.addClass(base.cursor.draw);            
-        }
+        };
 
         base.isLocked = function() {
             return base.locked;
-        }        
+        };     
 
         base.reset = function() {
             base.paint = false;
             base.prev = {x:null, y:null, d:null};
             base.curr = {x:null, y:null, d:null};
             base.strokes = new Array();
-        }        
+        };       
 
 		base.clear = function() {
-            base.context.clearRect(0, 0, canvas.width, canvas.height);
+            base.context.clearRect(0, 0, base.el.width, base.el.height);
             base.context.beginPath();
             base.context.closePath();
 		};
 
-        base.play = function() {
+        base.play = function(keepLocked) {
             if(base.isLocked()) return;
             if(!base.strokes) return;
 
@@ -144,7 +165,9 @@
             var interval = setInterval(function(){
                 if(i >= base.strokes.length) {
                     clearInterval(interval);
-                    base.unlock();
+                    if(!keepLocked) {
+                        base.unlock();
+                    }
                 } else {
                     if(base.strokes[i].d.toString() === 'true') {
                         base.prev = {x:base.strokes[i-1].x, y:base.strokes[i-1].y, d:base.strokes[i-1].d};
@@ -159,14 +182,14 @@
 
                 i++;
             }, 1000 / base.fps);   
-        }
+        };
 
         base.init();
     };
 
     $.arteest.draw.defaultOptions = {
-        width: 300,
-        height: 300,
+        width: 0,
+        height: 0,
         context: null,
         tools: null
     };

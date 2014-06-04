@@ -5,16 +5,18 @@ block content
 	.container
 		.page-header
 			h1 Gallery&nbsp;
-				small of Arteests
-		#alerts(data-init-error=error)
+				small of amazing
+		#alerts(data-error=error)
 			.error.alert.alert-danger
 				strong.message
 			.success.alert.alert-success
 				strong.message
-		each canvases, name in canvasesByName
+		each polyptych, index in canvases
 			.panel.panel-default
 				.panel-heading
-					h3.panel-title By #{name}
+					h3.panel-title #{index}
 				.list-group
-					each canvas in canvases
-						a.list-group-item(href="/draw/#{canvas._id}") #{canvas._id}
+					a.list-group-item(href="/draw/#{polyptych[0]._id}")
+						each canvas in polyptych
+							span #{canvas._id}#{canvas == polyptych[polyptych.length-1] ? '' : ' | '}
+						

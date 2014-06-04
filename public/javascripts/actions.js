@@ -46,7 +46,8 @@
 
             $.post( "/save", { 
                 name: $('#name').val(),
-                strokes: base.canvas.strokes 
+                strokes: base.canvas.strokes,
+                prev: base.canvas.$el.data('prev-id') || null
             }, function(data) {
                 if(data.error) {
                     $('#alerts .error .message').html(data.error);

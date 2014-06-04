@@ -13,60 +13,70 @@ router.get('/draw', function(req, res) {
     res.render('draw', {
         id: 'draw',
         title: 'Arteest | Draw',
-        error: 'false',
-        data: null
+        canvases: []
     });
 });
 
 router.get('/draw/:id', function(req, res) {
     var canvasesCollection = req.db.get('canvases');
+    var canvases = [];
 
-    canvasesCollection.findOne({_id: req.params.id}, function(err, doc) {
-        var error = null;
-
-        if(err) {
-            error = 'We could not load your artwork at this time.';
-        } else {
+    function collateCanvasLinkedList(id) {
+        canvasesCollection.findOne({_id: id}, function(err, doc) {
             if(doc) {
-                error = null;
-            } else {
-                error = 'We could not load your artwork at this time.';
-            }
-        }
+                canvases.push(doc);
 
-        res.render('draw', {
-            id: 'draw',
-            title: 'Arteest | Draw',
-            error: error,
-            data: doc
+                if(doc.prev) {
+                    collateCanvasLinkedList(doc.prev);
+                } else {
+                    res.render('draw', {
+                        id: 'draw',
+                        title: 'Arteest | Draw',
+                        canvases: canvases.reverse()
+                    });                        
+                } 
+            }
         });
-    });
+    }
+
+    collateCanvasLinkedList(req.params.id);
 });
 
 router.get('/gallery', function(req, res) {
     var canvasesCollection = req.db.get('canvases');
-
+    
+    // Get all canvases
     canvasesCollection.find({}, function(err, doc) {
-        var error = null;
-        var canvases = null;
+        if(doc) {
+            var docs = doc;
+            var canvases = [];
 
-        if(err) {
-            error = 'We could not load the gallery at this time.';
-        } else {
-            if(doc) {
-                error = null;
+            // Loop through every node in the collection
+            while(docs.length) {
+                var polyptych = [];
 
-                canvases = _.groupBy(doc, 'name');
-            } else {
-                error = 'We could not load the gallery at this time.';
+                var canvas = docs.pop(); // Pop presumably a leaf node to traverse towards the root
+                polyptych.push(canvas);
+
+                // Loop through each document looking for parents in the tree
+                var iter = canvas;
+                while(typeof iter !== "undefined") {
+                    iter = _.find(docs, function(element){return element._id == iter.prev});
+
+                    if(typeof iter !== "undefined") {
+                        polyptych.push(iter);
+                    }
+                }
+
+                canvases.push(polyptych);
             }
-        }
 
-        res.render('gallery', {
-            id: 'gallery',
-            title: 'Arteest | Gallery',
-            canvasesByName: canvases
-        });
+            res.render('gallery', {
+                id: 'gallery',
+                title: 'Arteest | Gallery',
+                canvases: canvases
+            });
+        }
     });
 });
 
@@ -76,8 +86,9 @@ router.post('/save', function(req, res) {
 
     var name = req.body.name;
     var strokes = req.body.strokes;
+    var prev = req.body.prev;
 
-    canvasesCollection.insert({name: name, strokes: strokes}, function(err, doc) {
+    canvasesCollection.insert({name: name, strokes: strokes, prev: prev}, function(err, doc) {
         if(err) {
             res.send({
                 error: 'We could not save your artwork at this time: ' + err
