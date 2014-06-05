@@ -28,6 +28,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 _ = require('underscore');
 
 // Set DB
+var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/data';
+mongo.Db.connect(mongoUri, function (err, db) {
+  /*db.collection('mydocs', function(er, collection) {
+    collection.insert({'mykey': 'myvalue'}, {safe: true}, function(er,rs) {
+    });
+  });*/
+});
+
 app.use(function(req, res, next) {
     req.db = db;
     next();
@@ -68,11 +76,11 @@ app.use(function(err, req, res, next) {
 // > node --debug ./bin/www
 // This configuration moved from bin/www.
 // To use <pre>npm start</pre> again, remove this snippet and uncomment the last line in this file.
-var debug = require('debug')('arteest');
+/*var debug = require('debug')('arteest');
 //var app = require('../app');
 app.set('port', process.env.PORT || 3000);
 var server = app.listen(app.get('port'), function() {
     debug('Express server listening on port ' + server.address().port);
-});
+});*/
 // <!-- bin/www End -->
-//module.exports = app;
+module.exports = app;
