@@ -7,7 +7,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongo = require('mongodb');
 var monk = require('monk');
-var db = monk('localhost:27017/web');
+var db = monk(process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'localhost:27017/web');
 var routes = require('./routes/index');
 
 // Express
@@ -28,16 +28,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 _ = require('underscore');
 
 // Set DB
-var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/data';
-mongo.Db.connect(mongoUri, function (err, db) {
+//var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/data';
+//mongo.Db.connect(mongoUri, function (err, db) {
   /*db.collection('mydocs', function(er, collection) {
     collection.insert({'mykey': 'myvalue'}, {safe: true}, function(er,rs) {
     });
   });*/
-});
-
+//});
 app.use(function(req, res, next) {
-    req.db = mongo.Db.connect(mongoUri, function (err, db) {});
+    req.db = db;
     next();
 });
 
