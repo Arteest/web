@@ -19,8 +19,8 @@ app.set('view engine', 'jade');
 
 app.use(favicon());
 app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb'}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -64,6 +64,8 @@ app.use(function(err, req, res, next) {
 });
 
 // <!-- bin/www Start -->
+// > node-inspector
+// > node --debug ./bin/www
 // This configuration moved from bin/www.
 // To use <pre>npm start</pre> again, remove this snippet and uncomment the last line in this file.
 var debug = require('debug')('arteest');

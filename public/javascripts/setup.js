@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	// Canvas
+	// Setup all canvases
 	var canvases = $('.canvas canvas');
 	$(canvases).each(function() {
 		$(this).arteest_draw({
@@ -8,13 +8,26 @@ $(document).ready(function() {
 		});
 	});
 
-	// Add to drawing on click
+	// Add to polyptych on click
 	$('#add').click(function() {
-		$(this).remove(); // Hide this button
+		$(this).remove(); // Hide add button
 
-		var template = $('.canvas canvas.template'); // Find template
-		var prev = $(template).parent().prev().find('canvas').get(0); // Find previous canvas
-		$(template).data('prev-id', $(prev).data('canvas')._id); // Set this prev id to id of previous canvas
-		$(template).removeClass('template'); // Show this canvas
+		// Insert new canvas
+		var template = $('#template-canvas').html();
+		var container = $(template).appendTo('#canvases');
+		var canvas = $(container).find('canvas');
+		var prev = $(container).prev().find('canvas').get(0); // Find previous canvas
+		
+		$(canvas).data('prev-id', $(prev).data('canvas')._id); // Set this prev id to id of previous canvas
+		$(canvas).arteest_draw({
+			width: $(canvas).width(),
+			height: $(canvas).height()
+		});
+
+		// Reveal Tools
+		$('#tools .disabled').removeClass('disabled');
+
+		// Animate to new canvas
+		$('#canvases').animate({ scrollLeft: $(canvas).offset().left }, 'slow');
 	});
 });

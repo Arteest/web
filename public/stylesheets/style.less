@@ -1,15 +1,17 @@
 #canvases {
+	margin:0;
+	white-space:nowrap;
+	overflow-x:scroll;
+	overflow-y:hidden;
+
 	.canvas {
 		vertical-align:top;
 		padding:0;
 
 		canvas {
+			display:block;
 			background-color:#fff;
-			border:1px solid #ddd;	
-
-			&.template {
-				display:none;
-			}
+			border:1px solid #ddd;
 
 			&.draw {
 				cursor:crosshair;
@@ -22,6 +24,10 @@
 			&.read-only {
 				cursor:not-allowed;
 			}
+
+			&.link {
+				cursor:pointer;
+			}
 		}
 	}
 }
@@ -29,11 +35,42 @@
 #tools {
 	margin-top:20px;
 	margin-bottom:20px;
+
+	.disabled {
+		display:none;
+	}
+}
+
+#colors {
+	.btn-black {
+		background-image: -webkit-linear-gradient(top,#999 0,#333 100%);
+    background-image: linear-gradient(to bottom,#999 0,#333 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#999', endColorstr='#333', GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+    background-repeat: repeat-x;
+    border-color: #666;		
+
+    :before {
+    	color:#fff;
+    }
+	}
+	.btn-black:hover,.btn-black:focus {
+	    background-color: #333;
+	    background-position: 0 -15px
+	}
+	.btn-black:active,.btn-black.active {
+	    background-color: #333;
+	    border-color: #666;
+	}
 }
 
 #actions {
 	margin-top:20px;
 	margin-bottom:20px;
+
+	.glyphicon-user {
+		top:0px;
+	}
 }
 
 #alerts .error,

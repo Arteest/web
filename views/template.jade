@@ -1,0 +1,18 @@
+//- Mixins
+
+mixin canvases()
+  ul#canvases.list-inline
+    if block
+      block
+
+mixin canvas(canvas)
+  li.canvas
+    canvas(width!=attributes.width||"300", height!=attributes.height||"300", class!=attributes.class, data-canvas=canvas)
+    if canvas && canvas.name
+      #byline
+        small.text-muted By #{canvas.name}
+
+// Templates
+
+script#template-canvas(type='text/template')
+  +canvas(null)

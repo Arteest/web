@@ -43,9 +43,11 @@
 		base.save = function() {
             $('#alerts .error').hide();
             $('#alerts .success').hide();
-
+            
             $.post( "/save", { 
                 name: $('#name').val(),
+                width: base.canvas.el.width,
+                height: base.canvas.el.height,
                 strokes: base.canvas.strokes,
                 prev: base.canvas.$el.data('prev-id') || null
             }, function(data) {

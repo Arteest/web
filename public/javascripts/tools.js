@@ -26,6 +26,10 @@
                 {
                     key: '#tool-play',
                     exe: base.play
+                },
+                {
+                    key: '#colors button',
+                    exe: base.color
                 }
             ];
 
@@ -40,7 +44,7 @@
                     $(this).tooltip({container: 'body'});
 
                     $(this).click(function() {                        
-                        tool.exe.call(base);
+                        tool.exe.call(base, this);
                     });
                 });
             });
@@ -53,7 +57,11 @@
 
         base.play = function() {
             base.canvas.play();
-        }
+        };
+
+        base.color = function(button) {
+            base.canvas.changeColor($(button).data('color'));
+        };
 
         base.init();
     };

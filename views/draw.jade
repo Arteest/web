@@ -1,41 +1,50 @@
 extends layout
 
-mixin canvas(canvas)
-	li.canvas
-		canvas(width="300", height="300", class!=attributes.class, data-canvas=canvas)
-		if canvas && canvas.name
-			#byline
-				small.text-muted By #{canvas.name}
-
 block content
-	// Draw
-	.container
-		.page-header
-			h1 Draw&nbsp;
-				small just because
-		#alerts(data-error=error)
-			.error.alert.alert-danger
-				strong.message
-			.success.alert.alert-success
-				strong.message
-		#tools.btn-toolbar(role="toolbar")
-			.btn-group 
-				button#tool-clear.btn.btn-default(type="button", data-toggle="tooltip", data-placement="top", title="Clear the canvas")
-					span.glyphicon.glyphicon-fire
-				button#tool-play.btn.btn-default(type="button", data-toggle="tooltip", data-placement="top", title="Play your drawing")
-					span.glyphicon.glyphicon-play-circle
-			if canvases.length
-				.btn-group
-					button#add.btn.btn-primary(type="button", title="Add to this Drawing") Add to this Drawing!
-		ul#canvases.list-inline
-			if canvases.length
-				each canvas in canvases
-					+canvas(canvas)
-				+canvas(null)(class="template")
-			else
-				+canvas(null)
-		#actions(role="actions")
-			.input-group
-				input#name.form-control(type="text", placeholder="Arteest Name")
-				span.input-group-btn
-					button#save.btn.btn-primary(type="button", title="Fin!") Fin!
+  // Draw
+  .container
+    .page-header
+      h1 Draw&nbsp;
+        small just because
+    #alerts(data-error=error)
+      .error.alert.alert-danger
+        strong.message
+      .success.alert.alert-success
+        strong.message
+    #tools.btn-toolbar(role="toolbar")
+      .btn-group(class="#{canvases.length ? 'disabled' : ''}")
+        button#tool-clear.btn.btn-default(type="button", data-toggle="tooltip", data-placement="top", title="Clear the canvas")
+          span.glyphicon.glyphicon-fire
+        button#tool-play.btn.btn-default(type="button", data-toggle="tooltip", data-placement="top", title="Play your drawing")
+          span.glyphicon.glyphicon-play-circle
+      #colors.btn-group(class="#{canvases.length ? 'disabled' : ''}")
+        button.btn.btn-default(type="button", data-color="#fff")
+          span.glyphicon.glyphicon-pencil
+        button.btn.btn-primary(type="button", data-color="#428bca")
+          span.glyphicon.glyphicon-pencil
+        button.btn.btn-success(type="button", data-color="#5cb85c")
+          span.glyphicon.glyphicon-pencil
+        button.btn.btn-info(type="button", data-color="#5bc0de")
+          span.glyphicon.glyphicon-pencil
+        button.btn.btn-warning(type="button", data-color="#f0ad4e")
+          span.glyphicon.glyphicon-pencil
+        button.btn.btn-danger(type="button", data-color="#d9534f")
+          span.glyphicon.glyphicon-pencil
+        button.btn.btn-black(type="button", data-color="#000")
+          span.glyphicon.glyphicon-pencil
+      if canvases.length
+        .btn-group
+          button#add.btn.btn-primary(type="button")
+            span.glyphicon.glyphicon-plus
+    +canvases()
+      if canvases.length
+        each canvas in canvases
+          +canvas(canvas)
+      else
+        +canvas(null)
+    #actions(role="actions")
+      .input-group
+        span.input-group-addon.glyphicon.glyphicon-user
+        input#name.form-control(type="text", placeholder="Arteest Name")
+        span.input-group-btn
+          button#save.btn.btn-primary(type="button", title="Fin!") Fin!

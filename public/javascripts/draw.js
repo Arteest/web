@@ -23,7 +23,7 @@
             // Initialize canvas logic variables
             base.locked = false;
             base.readOnly = false;
-            base.fps = 30;
+            base.fps = 100;
             base.cursor = {
                 draw: 'draw',
                 wait: 'wait',
@@ -37,6 +37,16 @@
             if(base.$el.data('canvas') != null) {
                 base.strokes = base.$el.data('canvas').strokes;
                 base.setReadOnly();
+
+                // Convert all stroke values to current size of canvas
+                var originalWidth = base.$el.data('canvas').width;
+                var originalHeight = base.$el.data('canvas').height;
+
+                $.each(base.strokes, function() {
+                    this.x *= base.el.width / originalWidth;
+                    this.y *= base.el.height / originalHeight;
+                });
+
                 base.play(true);
             } else {
                 // Star with a clean canvas
@@ -61,8 +71,8 @@
 			base.$el.mousedown(function(e) {
                 if(base.isLocked()) return false;
 
-  				var x = e.pageX - this.offsetLeft;
-  				var y = e.pageY - this.offsetTop;
+                var x = e.offsetX;
+                var y = e.offsetY;
 
   				base.paint = true;
   				base.addClick(x, y, false);
@@ -72,8 +82,8 @@
 			base.$el.mousemove(function(e){
                 if(base.isLocked()) return false;
 
-                var x = e.pageX - this.offsetLeft;
-                var y = e.pageY - this.offsetTop;
+                var x = e.offsetX;
+                var y = e.offsetY;
 
   				if(base.paint) {
     				base.addClick(x, y, true);
@@ -93,7 +103,7 @@
         base.addClick = function(x, y, dragging) {
             base.prev = {x:base.curr.x||x, y:base.curr.y||y, d:base.curr.d||dragging}; // || for first mousedown
             base.curr = {x:x, y:y, d:dragging};
-            base.strokes.push({x:x, y:y, d:dragging});
+            base.strokes.push({x:x, y:y, d:dragging, c:base.context.strokeStyle});
         };
 
         base.redraw = function() {
@@ -169,6 +179,8 @@
                         base.unlock();
                     }
                 } else {
+                    base.changeColor(base.strokes[i].c);
+
                     if(base.strokes[i].d.toString() === 'true') {
                         base.prev = {x:base.strokes[i-1].x, y:base.strokes[i-1].y, d:base.strokes[i-1].d};
                         base.curr = {x:base.strokes[i].x, y:base.strokes[i].y, d:base.strokes[i].d};
@@ -183,6 +195,10 @@
                 i++;
             }, 1000 / base.fps);   
         };
+
+        base.changeColor = function(color) {
+            base.context.strokeStyle = color;
+        }
 
         base.init();
     };
