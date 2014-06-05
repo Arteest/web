@@ -1,18 +1,5 @@
 module.exports = function(grunt) {
     grunt.initConfig({
-        develop: {
-            server: {
-                file: 'app.js',
-            }
-        },
-        shell: {
-            mongo: {
-                command: 'mongod',
-                options: {
-                    async: true
-                }
-            }
-        },
         less: {
             development: {
                 options: {
@@ -26,14 +13,6 @@ module.exports = function(grunt) {
             }
         },
         watch: {
-            js: {
-                files: [
-                    'app.js',
-                    'routes/**/*.js'
-                ],
-                tasks: ['develop'],
-                options: { nospawn: true }
-            },
             css: {
                 files: ['public/stylesheets/*.less'],
                 tasks: ['less'],
@@ -59,11 +38,9 @@ module.exports = function(grunt) {
         }
     });
  
-    grunt.loadNpmTasks('grunt-develop');
-    grunt.loadNpmTasks('grunt-shell-spawn');
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-copy');    
  
-    grunt.registerTask('default', ['develop', 'shell', 'copy', 'watch']);
+    grunt.registerTask('default', ['copy', 'watch']);
 };
