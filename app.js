@@ -37,7 +37,7 @@ mongo.Db.connect(mongoUri, function (err, db) {
 });
 
 app.use(function(req, res, next) {
-    req.db = db;
+    req.db = mongo.Db.connect(mongoUri, function (err, db) {});
     next();
 });
 
