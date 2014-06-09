@@ -1,7 +1,40 @@
 extends layout
 
 block content
-	// Index
+	// Home
 	.container
-		.page-header
-			h1 #{title}
+		h1.logo.logo-big.logo-center #{title}
+	.container.definition
+		.row
+			.col-md-6.col-md-offset-3
+				blockquote
+					p "An artist who takes nobody and nothing seriously, not even themselves, and uses humor and parody in their art."
+					footer 
+						cite 
+							a(href="http://www.urbandictionary.com/define.php?term=arteest", target="_blank") Urban Dictionary
+	hr
+	.container.steps
+		.row
+			.col-md-4.step-1
+				h2 Draw
+				p Draw something awesome in the blank canvas provided.
+			.col-md-4.step-2
+				h2 Share
+				p When you're done, share it with a friend who can continue the drawing. 
+			.col-md-4.step-3
+				h2 Repeat
+				p Keep sharing your drawings to create an amazing scene!
+		.row
+			.col-md-4
+				a.btn.btn-default.center-block(href="/draw") Start Drawing!
+	hr
+	.container.coming-soon
+		.row
+			.col-md-6.col-md-offset-3
+				h2 Coming Soon
+				ul
+					li Claim your Author Name
+					li More colors
+					li 
+						a(href="mailto:vinicio@arteest.me") Email me 
+						span your idea
