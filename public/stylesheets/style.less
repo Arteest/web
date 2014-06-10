@@ -1,5 +1,4 @@
-@global-font:'Droid Sans', sans-serif;
-@header-font:'Grand Hotel', cursive;
+@import (reference) "base.less";
 
 html, body {
 	font-family:@global-font;
@@ -26,47 +25,9 @@ h1 {
 	}
 }
 
-.steps {
-	.step-1 {
-		h2 {			
-			color:#8aa9e6;
-		}
-	}
-
-	.step-2 {
-		h2 {
-			color:#e68f99;
-		}
-	}
-
-	.step-3 {
-		h2 {			
-			color:#82d04d;
-		}		
-	}
-
-	h2 {
-		font-family:@header-font;
-		text-align:center;
-		font-size:70px;
-	}
-
-	p {
-		text-align:center;
-	}
-}
-
-.coming-soon {
-	h2 {
-		font-family:@header-font;
-		text-align:center;
-		font-size:70px;
-		color:#80bfff;
-	}
-}
-
 .footer {
 	text-align:center;
+	font-size:75%;
 	margin-bottom:20px;
 }
 
