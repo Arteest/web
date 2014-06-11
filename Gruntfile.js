@@ -76,8 +76,6 @@ module.exports = function(grunt) {
                     [
                         'public/stylesheets/bootstrap.min.css',
                         'public/stylesheets/bootstrap-theme.min.css',
-                        'http://fonts.googleapis.com/css?family=Grand+Hotel',
-                        'http://fonts.googleapis.com/css?family=Droid+Sans:400,700',                   
                         'public/stylesheets/base.css',                        
                         'public/stylesheets/style.css',                        
                         'public/stylesheets/index.css'

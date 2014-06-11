@@ -16,7 +16,8 @@
     "monk": "*",
     "morgan": "~1.0.0",
     "static-favicon": "~1.0.0",
-    "underscore": "^1.6.0"
+    "underscore": "^1.6.0",
+    "newrelic": "^1.7.1"    
   },
   "devDependencies": {
     "grunt": "^0.4.4",
