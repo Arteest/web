@@ -6,7 +6,7 @@ block content
     .page-header
       h1 Draw&nbsp;
         small just because
-    #alerts(data-error=error)
+    #alerts(data-alert-error=error, data-alert-success=success)
       .error.alert.alert-danger
         strong.message
       .success.alert.alert-success
@@ -42,9 +42,15 @@ block content
           +canvas(canvas)
       else
         +canvas(null)
+  .container
     #actions(role="actions")
-      .input-group
-        span.input-group-addon.glyphicon.glyphicon-user
-        input#name.form-control(type="text", placeholder="Arteest Name")
-        span.input-group-btn
-          button#save.btn.btn-primary(type="button", title="Fin!") Fin!
+      fieldset("#{canvases.length ? 'disabled' : ''}")
+        .form-group
+          .input-group
+            span.input-group-addon.glyphicon.glyphicon-user
+            input#name.form-control(type="text", placeholder="Arteest Name")
+        .form-group
+          .input-group
+            span.input-group-addon.glyphicon.glyphicon-send
+            input#email.form-control(type="text", placeholder="Email This Masterpiece to a Friend (Optional)")
+        button#save.btn.btn-primary(type="button", title="Fin!") Fin!

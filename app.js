@@ -9,6 +9,7 @@ var bodyParser = require('body-parser');
 var mongo = require('mongodb');
 var monk = require('monk');
 var db = monk(process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'localhost:27017/web');
+var nodemailer = require('nodemailer');
 var routes = require('./routes/index');
 
 // Express
@@ -18,6 +19,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+// Configure Other Requires
 app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json({limit: '50mb'}));
@@ -28,9 +30,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Underscore
 _ = require('underscore');
 
-// Set DB
+// Email SMTP
+var smtp = nodemailer.createTransport('SMTP', {
+    service: 'gmail',
+    auth: {
+        user: process.env.SMTP_PRODUCTION_USER,
+        pass: process.env.SMTP_PRODUCTION_PASS
+    }
+});
+
+// Pass the DB object through the request
 app.use(function(req, res, next) {
     req.db = db;
+    req.smtp = smtp;
     next();
 });
 

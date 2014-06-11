@@ -46,6 +46,7 @@
             
             $.post( "/save", { 
                 name: $('#name').val(),
+                email: $('#email').val(),
                 width: base.canvas.el.width,
                 height: base.canvas.el.height,
                 strokes: base.canvas.strokes,
@@ -54,10 +55,9 @@
                 if(data.error) {
                     $('#alerts .error .message').html(data.error);
                     $('#alerts .error').show();
-                } else if(data.success) {
-                    $('#alerts .success .message').html(data.link);
-                    $('#alerts .success').show();
-                } else {}
+                } else {
+                    window.location = data.redirect;
+                }
             }, "json");
 		};
 

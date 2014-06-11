@@ -32,7 +32,8 @@ router.get('/draw/:id', function(req, res) {
                     res.render('draw', {
                         id: 'draw',
                         title: 'Arteest | Draw',
-                        canvases: canvases.reverse()
+                        canvases: canvases.reverse(),
+                        success: req.query.alert ? 'Your artwork has been saved and sent!' : null
                     });                        
                 } 
             }
@@ -44,8 +45,7 @@ router.get('/draw/:id', function(req, res) {
 
 router.get('/gallery', function(req, res) {
     var canvasesCollection = req.db.get('canvases');
-    var docloops = 0;
-    var ptychloops = 0;
+
     // Get all canvases
     canvasesCollection.find({}, function(err, doc) {
         if(doc) {
@@ -54,7 +54,6 @@ router.get('/gallery', function(req, res) {
 
             // Loop through every node in the collection
             while(docs.length) {
-                docloops++;
                 var polyptych = [];
 
                 var canvas = docs.pop(); // Pop a node to traverse towards the root
@@ -63,7 +62,6 @@ router.get('/gallery', function(req, res) {
                 // Loop through each document looking for parents in the tree
                 var iter = canvas;
                 while(typeof iter !== "undefined") {
-                    ptychloops++;
                     iter = _.find(docs, function(element){return element._id == iter.prev});
 
                     if(typeof iter !== "undefined") {
@@ -73,9 +71,6 @@ router.get('/gallery', function(req, res) {
 
                 canvases.push(polyptych.reverse());
             }
-
-            console.log(docloops);
-            console.log(ptychloops);
 
             res.render('gallery', {
                 id: 'gallery',
@@ -87,33 +82,91 @@ router.get('/gallery', function(req, res) {
 });
 
 // ----- API -----
-router.post('/save', function(req, res) {
+router.post('/save', function(req, res, next) {
     var canvasesCollection = req.db.get('canvases');
 
     var name = req.body.name;
+    var email = req.body.email;
     var width = req.body.width;
     var height = req.body.height;
     var strokes = req.body.strokes;
     var prev = req.body.prev;
 
-    canvasesCollection.insert({
-        name: name, 
-        width:width, 
-        height:height, 
-        strokes: strokes, 
-        prev: prev
-    }, function(err, doc) {
-        if(err) {
-            res.send({
-                error: 'We could not save your artwork at this time: ' + err
-            });
-        } else {
-            res.send({
-                success: true,
-                link: 'Your canvas has been saved!'
-            });
+    // Validate strokes
+    if(!strokes) {
+        res.send({
+            error: 'You cannot submit a blank drawing.'
+        });
+        
+        return next();
+    }
+
+    // Validate email if present
+    var validEmail = true;
+    var hasRecipients = !!email;
+
+    if(hasRecipients) {  
+        var validator = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        email = email.replace(/\s/g, ''); // Remove all white space
+        email = email.split(','); // Splits all emails
+        
+        for(var i = 0; i < email.length; i++) {
+            if(!validator.test(email[i])) {
+                validEmail = false;
+            }
         }
-    });
+    }
+
+    if(validEmail || !hasRecipients) {
+        // Insert drawing
+        canvasesCollection.insert({
+            name: name, 
+            width:width, 
+            height:height, 
+            strokes: strokes, 
+            prev: prev
+        }, function(err, doc) {
+            if(err) {
+                res.send({
+                    error: 'We could not save your artwork at this time: ' + err
+                });
+            } else {
+                if(hasRecipients) {
+                    // Email all recipients                    
+                    for(var i = 0; i < email.length; i++) {
+                        var options = {
+                            from: "Arte of Arteest <draw@arteest.me>",
+                            to: email[i],
+                            subject: "A Wild Drawing Appears!",
+                            text: "Hello! " + (name ? "@"+name : "An Arteest") + " would like you to complete this drawing. Simply follow this link to get started: http://www.arteest.me/draw/" + doc._id + ".",
+                            html: "<p>Hello!</p><p>" + (name ? "@"+name : "An Arteest") + " would like you to complete this drawing.</p><p>Simply click the following link to get started: <a href='http://www.arteest.me/draw/" + doc._id + "'>http://www.arteest.me/draw/" + doc._id + "</a></p>."
+                        }
+
+                        req.smtp.sendMail(options, function(err) {
+                            if(err) {
+                                res.send({
+                                    error: 'Your artwork has been saved but we could not send it to your friend at this time. ' + err
+                                });
+                            } else {
+                                res.send({
+                                    redirect: '/draw/' + doc._id + '?alert=success'
+                                });
+                            }
+                        });
+                    }
+                } else {
+                    res.send({
+                        redirect: '/draw/' + doc._id + '?alert=success'
+                    });
+                }
+            }
+        });
+    } else {
+        res.send({
+            error: 'Please enter valid a email address.'
+        });
+    }
 });
 
 module.exports = router;
