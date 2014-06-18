@@ -101,11 +101,8 @@ router.post('/save', function(req, res, next) {
         return next();
     }
 
-    // Validate email if present
-    var validEmail = true;
-    var hasRecipients = !!email;
-
-    if(hasRecipients) {  
+    // Validate all email addresses
+    if(!!email) {  
         var validator = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
         email = email.replace(/\s/g, ''); // Remove all white space
@@ -113,60 +110,61 @@ router.post('/save', function(req, res, next) {
         
         for(var i = 0; i < email.length; i++) {
             if(!validator.test(email[i])) {
-                validEmail = false;
+                res.send({
+                    error: 'Please enter a valid email address.'
+                });
+
+                return next();
             }
         }
     }
 
-    if(validEmail || !hasRecipients) {
-        // Insert drawing
-        canvasesCollection.insert({
-            name: name, 
-            width:width, 
-            height:height, 
-            strokes: strokes, 
-            prev: prev
-        }, function(err, doc) {
-            if(err) {
-                res.send({
-                    error: 'We could not save your artwork at this time: ' + err
-                });
-            } else {
-                if(hasRecipients) {
-                    // Email all recipients                    
-                    for(var i = 0; i < email.length; i++) {
-                        var options = {
-                            from: "Arte of Arteest <draw@arteest.me>",
-                            to: email[i],
-                            subject: "A Wild Drawing Appears!",
-                            text: "Hello! " + (name ? "@"+name : "An Arteest") + " would like you to complete this drawing. Simply follow this link to get started: http://www.arteest.me/draw/" + doc._id + ".",
-                            html: "<p>Hello!</p><p>" + (name ? "@"+name : "An Arteest") + " would like you to complete this drawing.</p><p>Simply click the following link to get started: <a href='http://www.arteest.me/draw/" + doc._id + "'>http://www.arteest.me/draw/" + doc._id + "</a></p>."
-                        }
+    // Insert drawing
+    var promise = canvasesCollection.insert({
+        name: name, 
+        width:width, 
+        height:height, 
+        strokes: strokes, 
+        prev: prev
+    });
 
-                        req.smtp.sendMail(options, function(err) {
-                            if(err) {
-                                res.send({
-                                    error: 'Your artwork has been saved but we could not send it to your friend at this time. ' + err
-                                });
-                            } else {
-                                res.send({
-                                    redirect: '/draw/' + doc._id + '?alert=success'
-                                });
-                            }
-                        });
-                    }
+    // Error inserting drawing
+    promise.error(function(err) {
+        res.send({
+            error: 'We could not save your artwork at this time: ' + err
+        });
+
+        return next();
+    });
+
+    // Success - Email all recipients
+    promise.success(function(doc) {     
+        if(!!email) {
+            var options = {
+                from: "Arte of Arteest <draw@arteest.me>",
+                bcc: email,
+                subject: "A Wild Drawing Appears!",
+                text: "Hello! " + (name ? "@"+name : "An Arteest") + " would like you to complete this drawing. Simply follow this link to get started: http://www.arteest.me/draw/" + doc._id + ".",
+                html: "<p>Hello!</p><p>" + (name ? "@"+name : "An Arteest") + " would like you to complete a drawing.</p><p>Simply click the following link to get started: <a href='http://www.arteest.me/draw/" + doc._id + "'>http://www.arteest.me/draw/" + doc._id + "</a>.</p>"
+            }
+
+            req.smtp.sendMail(options, function(err) {
+                if(err) {
+                    res.send({
+                        error: 'Your artwork has been saved but we could not send it to your friend(s) at this time. ' + err
+                    });
                 } else {
                     res.send({
                         redirect: '/draw/' + doc._id + '?alert=success'
                     });
                 }
-            }
-        });
-    } else {
-        res.send({
-            error: 'Please enter valid a email address.'
-        });
-    }
+            });
+        } else {
+            res.send({
+                redirect: '/draw/' + doc._id + '?alert=success'
+            });
+        }
+    });
 });
 
 module.exports = router;

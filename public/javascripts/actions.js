@@ -34,15 +34,18 @@
 
                 base.$el.find(tool.key).each(function() {
                     $(this).click(function() {                        
-                        tool.exe.call(base);
+                        tool.exe.call(base, this);
                     });
                 });
             });
         };
 
-		base.save = function() {
+		base.save = function(context) {
             $('#alerts .error').hide();
             $('#alerts .success').hide();
+
+            var button = context;
+            $(button).button('loading');
             
             $.post( "/save", { 
                 name: $('#name').val(),
@@ -58,6 +61,8 @@
                 } else {
                     window.location = data.redirect;
                 }
+
+                $(button).button('reset');
             }, "json");
 		};
 

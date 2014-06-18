@@ -39,7 +39,7 @@ var smtp = nodemailer.createTransport('SMTP', {
     }
 });
 
-// Pass the DB object through the request
+// Pass the DB object and SMTP object through the request
 app.use(function(req, res, next) {
     req.db = db;
     req.smtp = smtp;
