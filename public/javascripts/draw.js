@@ -17,7 +17,7 @@
             // Initialize context variables
             base.context = base.el.getContext('2d');
             base.context.lineJoin = 'round';
-            base.context.lineWidth = 10;
+            base.context.lineWidth = 5;
             base.context.strokeStyle = '#000';
 
             // Initialize canvas logic variables
@@ -98,7 +98,7 @@
         base.addClick = function(x, y, dragging) {
             base.prev = {x:base.curr.x||x, y:base.curr.y||y, d:base.curr.d||dragging}; // || for first mousedown
             base.curr = {x:x, y:y, d:dragging};
-            base.strokes.push({x:x, y:y, d:dragging, c:base.context.strokeStyle});
+            base.strokes.push({x:x, y:y, d:dragging, c:base.context.strokeStyle, l:base.context.lineWidth});
         };
 
         base.redraw = function() {
@@ -175,6 +175,7 @@
                     }
                 } else {
                     base.changeColor(base.strokes[i].c);
+                    base.changeLead(base.strokes[i].l);
 
                     if(base.strokes[i].d.toString() === 'true') {
                         base.prev = {x:base.strokes[i-1].x, y:base.strokes[i-1].y, d:base.strokes[i-1].d};
@@ -193,6 +194,10 @@
 
         base.changeColor = function(color) {
             base.context.strokeStyle = color;
+        }
+
+        base.changeLead = function(lead) {
+            base.context.lineWidth = lead;
         }
 
         base.init();

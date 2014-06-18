@@ -30,8 +30,17 @@ block content
           span.glyphicon.glyphicon-pencil
         button.btn.btn-danger(type="button", data-color="#D9534F", data-toggle="tooltip", data-placement="top", title="#D9534F")
           span.glyphicon.glyphicon-pencil
-        button.btn.btn-black(type="button", data-color="#000000", data-toggle="tooltip", data-placement="top", title="#000000")
+        button.btn.btn-black.active(type="button", data-color="#000000", data-toggle="tooltip", data-placement="top", title="#000000")
           span.glyphicon.glyphicon-pencil
+      #leads.btn-group
+        button.btn.btn-default(type="button", data-lead="1", data-toggle="tooltip", data-placement="top", title="1px")
+          span Fine
+        button.btn.btn-default.active(type="button", data-lead="5", data-toggle="tooltip", data-placement="top", title="5px")
+          span Normal
+        button.btn.btn-default(type="button", data-lead="10", data-toggle="tooltip", data-placement="top", title="10px")
+          span Marker
+        button.btn.btn-default(type="button", data-lead="50", data-toggle="tooltip", data-placement="top", title="50px")
+          span Jumbo
     +canvases()
       if canvases.length
         each canvas in canvases
