@@ -15,26 +15,34 @@
             base.options = $.extend({}, $.arteest.actions.defaultOptions, options);
 
             // Store canvas reference
-            base.canvas = $(base.options.canvas).data('arteest.draw');
+            if(base.options.canvas) {
+                base.canvas = $(base.options.canvas).data('arteest.draw');
+            }
 
             // Initialize actions
             base.actionset = [
                 {
                     key: '#save',
                     exe: base.save
+                },
+                {
+                    key: '#add',
+                    exe: base.add
                 }
             ];
 
             base.setupActions();
         };
 
-        base.setupActions = function() {
+        base.setupActions = function() {            
             $(base.actionset).each(function() {
-                var tool = this;
+                var action = this;
 
-                base.$el.find(tool.key).each(function() {
+                base.$el.find(action.key).each(function() {
+                    $(this).tooltip({container: 'body'});
+
                     $(this).click(function() {                        
-                        tool.exe.call(base, this);
+                        action.exe.call(base, this);
                     });
                 });
             });
@@ -65,6 +73,34 @@
                 $(button).button('reset');
             }, "json");
 		};
+
+        base.add = function(context) {
+            $(context).closest('fieldset').remove(); // Hide add button
+
+            // Insert new canvas
+            var template = $('#template-canvas').html();
+            var container = $(template).appendTo('#canvases');
+            var canvas = $(container).find('canvas');
+            var prev = $(container).prev().find('canvas').get(0); // Find previous canvas
+            
+            $(canvas).data('prev-id', $(prev).data('canvas')._id); // Set this prev id to id of previous canvas
+            var blankCanvas = $(canvas).arteest_draw({
+                width: $(canvas).width(),
+                height: $(canvas).height()
+            });
+
+            // Store canvas reference
+            base.canvas = $(blankCanvas).data('arteest.draw');
+
+            // Reveal Tools
+            $('#tools.disabled').removeClass('disabled');
+
+            // Allow form submission
+            $('#form').removeClass('disabled');
+
+            // Animate to new canvas
+            $('#canvases').animate({ scrollLeft: $(canvas).offset().left }, 'slow');
+        };
 
         base.init();
     };

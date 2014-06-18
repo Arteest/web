@@ -59,11 +59,6 @@
                 $('#tools').arteest_tools({
                     canvas: base.el
                 });
-
-                // Setup actions
-                $('#actions').arteest_actions({
-                    canvas: base.el
-                });
             }
         };
 

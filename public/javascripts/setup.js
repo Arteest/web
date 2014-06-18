@@ -8,27 +8,9 @@ $(document).ready(function() {
 		});
 	});
 
-	// Add to polyptych on click
-	$('#add').click(function() {
-		$(this).remove(); // Hide add button
-
-		// Insert new canvas
-		var template = $('#template-canvas').html();
-		var container = $(template).appendTo('#canvases');
-		var canvas = $(container).find('canvas');
-		var prev = $(container).prev().find('canvas').get(0); // Find previous canvas
-		
-		$(canvas).data('prev-id', $(prev).data('canvas')._id); // Set this prev id to id of previous canvas
-		$(canvas).arteest_draw({
-			width: $(canvas).width(),
-			height: $(canvas).height()
-		});
-
-		// Reveal Tools
-		$('#tools .disabled').removeClass('disabled');
-
-		// Animate to new canvas
-		$('#canvases').animate({ scrollLeft: $(canvas).offset().left }, 'slow');
+  // Setup actions
+	$('#actions').arteest_actions({
+		canvas: (canvases.length > 1 ? null : $(canvases).get(0))
 	});
 
 	// Alert on Startup
