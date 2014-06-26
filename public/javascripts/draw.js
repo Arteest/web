@@ -47,10 +47,10 @@
                     this.y *= base.el.height / originalHeight;
                 });
 
-                base.play(true);
+                base.play();
             } else {
-                // Star with a clean canvas
-                base.unlock();
+                // Start with a clean canvas
+                base.unlock();                
 
                 // Setup drawing capabilities
                 base.setupMouseEvents();
@@ -96,7 +96,7 @@
         };
 
         base.addClick = function(x, y, dragging) {
-            base.prev = {x:base.curr.x||x, y:base.curr.y||y, d:base.curr.d||dragging}; // || for first mousedown
+            base.prev = {x:base.curr.x||x, y:base.curr.y||y, d:base.curr.d||dragging, c:base.context.strokeStyle, l:base.context.lineWidth}; // || for first mousedown
             base.curr = {x:x, y:y, d:dragging};
             base.strokes.push({x:x, y:y, d:dragging, c:base.context.strokeStyle, l:base.context.lineWidth});
         };
@@ -158,7 +158,22 @@
             base.context.closePath();
 		};
 
-        base.play = function(keepLocked) {
+        base.render = function(i) {
+            base.changeColor(base.strokes[i].c);
+            base.changeLead(base.strokes[i].l);
+            
+            if(base.strokes[i].d.toString() === 'true') {
+                base.prev = {x:base.strokes[i-1].x, y:base.strokes[i-1].y, d:base.strokes[i-1].d};
+                base.curr = {x:base.strokes[i].x, y:base.strokes[i].y, d:base.strokes[i].d};
+            } else {
+                base.prev = {x:base.strokes[i].x-1, y:base.strokes[i].y-1, d:base.strokes[i].d};
+                base.curr = {x:base.strokes[i].x, y:base.strokes[i].y, d:base.strokes[i].d};
+            }
+
+            base.redraw();
+        }
+
+        base.play = function() {
             if(base.isLocked()) return;
             if(!base.strokes) return;
 
@@ -167,30 +182,37 @@
 
             var i = 0;
 
-            var interval = setInterval(function(){
+            base.interval = setInterval(function(){
                 if(i >= base.strokes.length) {
-                    clearInterval(interval);
-                    if(!keepLocked) {
+                    clearInterval(base.interval);
+                    if(!base.isReadOnly()) {
                         base.unlock();
                     }
                 } else {
-                    base.changeColor(base.strokes[i].c);
-                    base.changeLead(base.strokes[i].l);
-
-                    if(base.strokes[i].d.toString() === 'true') {
-                        base.prev = {x:base.strokes[i-1].x, y:base.strokes[i-1].y, d:base.strokes[i-1].d};
-                        base.curr = {x:base.strokes[i].x, y:base.strokes[i].y, d:base.strokes[i].d};
-                    } else {
-                        base.prev = {x:base.strokes[i].x-1, y:base.strokes[i].y-1, d:base.strokes[i].d};
-                        base.curr = {x:base.strokes[i].x, y:base.strokes[i].y, d:base.strokes[i].d};
-                    }
-
-                    base.redraw();                    
+                    base.render(i);                  
                 }
 
                 i++;
             }, 1000 / base.fps);   
         };
+
+        base.forward = function(notifySiblings) {
+            clearInterval(base.interval);
+            if(!base.isReadOnly()) {
+                base.unlock();
+            }
+            base.clear();
+
+            for(i = 0; i < base.strokes.length; i++) {
+                base.render(i);
+            }
+
+            if(notifySiblings) {
+                $('canvas').not(base.el).each(function() {
+                    $(this).data('arteest.draw').forward(false);
+                });
+            }
+        }
 
         base.changeColor = function(color) {
             base.context.strokeStyle = color;

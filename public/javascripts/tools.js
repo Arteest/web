@@ -28,13 +28,17 @@
                     exe: base.play
                 },
                 {
+                    key: '#tool-forward',
+                    exe: base.forward
+                },
+                {
                     key: '#colors button',
                     exe: base.color
                 },
                 {
                     key: '#leads button',
                     exe: base.lead
-                }
+                }                
             ];
 
             base.setupTools();
@@ -53,7 +57,7 @@
                         tool.exe.call(base, this);
                     });
                 });
-            });
+            });            
         };
 
 		base.clear = function() {
@@ -63,6 +67,10 @@
 
         base.play = function() {
             base.canvas.play();
+        };
+
+        base.forward = function() {
+            base.canvas.forward(true);
         };
 
         base.color = function(button) {

@@ -36,6 +36,13 @@ router.get('/draw/:id', function(req, res) {
                         success: req.query.alert ? 'Your artwork has been saved and sent!' : null
                     });                        
                 } 
+            } else {
+                // Render blank or up to the possibly deleted node
+                res.render('draw', {
+                    id: 'draw',
+                    title: 'Arteest | Draw',
+                    canvases: canvases.reverse()
+                });
             }
         });
     }
