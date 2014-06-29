@@ -22,5 +22,23 @@ $(document).ready(function() {
 	} else if(success) {
 		$('#alerts .success .message').html(success);
     $('#alerts .success').show();
-	} 
+	}
+
+	// Start scrolling automatically
+	setTimeout(function(){
+		var canvasesWidth = 0;
+		$('#canvases li').each(function() {
+			canvasesWidth += $(this).width();
+		});
+
+		$('#canvases').animate({ scrollLeft: canvasesWidth }, canvasesWidth);
+
+		var $viewport = $('html, body');
+		$viewport.bind("scroll mousedown DOMMouseScroll mousewheel keyup", function(e) {
+    	if(e.which > 0 || e.type === "mousedown" || e.type === "mousewheel") {
+         $('#canvases').stop();
+         $viewport.unbind('scroll mousedown DOMMouseScroll mousewheel keyup');
+    	}
+		}); 
+	}, 500);
 });

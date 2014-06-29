@@ -86,11 +86,20 @@ h1 {
 }
 
 #tools {
-	margin-top:20px;
-	margin-bottom:20px;
+	margin:0 0 20px 0;
 
 	&.disabled {
 		display:none;
+	}
+
+	.btn-group {
+		display:block;
+		float:none;
+		margin:5px;
+
+		&:first-child {
+			margin-top:0;
+		}
 	}
 }
 
@@ -118,9 +127,6 @@ h1 {
 }
 
 #actions {
-	margin-top:20px;
-	margin-bottom:20px;
-
 	.glyphicon {
 		top:0px;
 	}
@@ -128,6 +134,25 @@ h1 {
 	fieldset {
 		&.disabled {
 			display:none;
+		}
+
+		.form-group {
+			margin:5px;
+			width:400px;
+
+			&:first-child {
+				margin-top:0;
+			}
+		}
+
+		.btn-group {
+			display:block;
+			float:none;
+			margin:5px;
+
+			&:first-child {
+				margin-top:0;
+			}
 		}
 	}
 }

@@ -11,58 +11,58 @@ block content
         strong.message
       .success.alert.alert-success
         strong.message
-    #tools.btn-toolbar(role="toolbar", class="#{canvases.length ? 'disabled' : ''}")
-      .btn-group
-        button#tool-clear.btn.btn-default(type="button", data-toggle="tooltip", data-placement="top", title="Clear the canvas")
-          span.glyphicon.glyphicon-fire
-        button#tool-play.btn.btn-default(type="button", data-toggle="tooltip", data-placement="top", title="Play your drawing")
-          span.glyphicon.glyphicon-play
-        button#tool-forward.btn.btn-default(type="button", data-toggle="tooltip", data-placement="top", title="Fast Forward")
-          span.glyphicon.glyphicon-fast-forward
-      #colors.btn-group
-        button.btn.btn-default(type="button", data-color="#ffffff", data-toggle="tooltip", data-placement="top", title="#FFFFFF")
-          span.glyphicon.glyphicon-pencil
-        button.btn.btn-primary(type="button", data-color="#428BCA", data-toggle="tooltip", data-placement="top", title="#428BCA")
-          span.glyphicon.glyphicon-pencil
-        button.btn.btn-success(type="button", data-color="#5CB85C", data-toggle="tooltip", data-placement="top", title="#5CB85C")
-          span.glyphicon.glyphicon-pencil
-        button.btn.btn-info(type="button", data-color="#5BC0DE", data-toggle="tooltip", data-placement="top", title="#5BC0DE")
-          span.glyphicon.glyphicon-pencil
-        button.btn.btn-warning(type="button", data-color="#F0AD4E", data-toggle="tooltip", data-placement="top", title="#F0AD4E")
-          span.glyphicon.glyphicon-pencil
-        button.btn.btn-danger(type="button", data-color="#D9534F", data-toggle="tooltip", data-placement="top", title="#D9534F")
-          span.glyphicon.glyphicon-pencil
-        button.btn.btn-black.active(type="button", data-color="#000000", data-toggle="tooltip", data-placement="top", title="#000000")
-          span.glyphicon.glyphicon-pencil
-      #leads.btn-group
-        button.btn.btn-default(type="button", data-lead="1", data-toggle="tooltip", data-placement="top", title="1px")
-          span Fine
-        button.btn.btn-default.active(type="button", data-lead="5", data-toggle="tooltip", data-placement="top", title="5px")
-          span Normal
-        button.btn.btn-default(type="button", data-lead="10", data-toggle="tooltip", data-placement="top", title="10px")
-          span Marker
-        button.btn.btn-default(type="button", data-lead="50", data-toggle="tooltip", data-placement="top", title="50px")
-          span Jumbo
     +canvases()
       if canvases.length
         each canvas in canvases
           +canvas(canvas)
       else
         +canvas(null)
-  .container
-    #actions(role="actions")
-      if canvases.length
-        fieldset
-          .form-group
-            .btn-group
-              button#add.btn.btn-primary(type="button") Add to this Masterpiece!
-      fieldset#form(class="#{canvases.length ? 'disabled' : ''}")
-        .form-group
-          .input-group
-            span.input-group-addon.glyphicon.glyphicon-user
-            input#name.form-control(type="text", placeholder="Arteest Name")
-        .form-group
-          .input-group
-            span.input-group-addon.glyphicon.glyphicon-send
-            input#email.form-control(type="text", placeholder="Email This Masterpiece to a Friend (Optional)")
-        button#save.action.btn.btn-primary(type="button", title="Fin!", data-loading-text="Reticulating Splines...") Fin!
+      li
+        #tools(role="toolbar", class="#{canvases.length ? 'disabled' : ''}")
+          .btn-group.clearfix
+            button#tool-clear.btn.btn-default(type="button", data-toggle="tooltip", data-placement="top", title="Clear the canvas")
+              span.glyphicon.glyphicon-fire
+            button#tool-play.btn.btn-default(type="button", data-toggle="tooltip", data-placement="top", title="Play your drawing")
+              span.glyphicon.glyphicon-play
+            button#tool-forward.btn.btn-default(type="button", data-toggle="tooltip", data-placement="top", title="Fast Forward")
+              span.glyphicon.glyphicon-fast-forward
+          #colors.btn-group.clearfix
+            button.btn.btn-default(type="button", data-color="#ffffff", data-toggle="tooltip", data-placement="top", title="#FFFFFF")
+              span.glyphicon.glyphicon-pencil
+            button.btn.btn-primary(type="button", data-color="#428BCA", data-toggle="tooltip", data-placement="top", title="#428BCA")
+              span.glyphicon.glyphicon-pencil
+            button.btn.btn-success(type="button", data-color="#5CB85C", data-toggle="tooltip", data-placement="top", title="#5CB85C")
+              span.glyphicon.glyphicon-pencil
+            button.btn.btn-info(type="button", data-color="#5BC0DE", data-toggle="tooltip", data-placement="top", title="#5BC0DE")
+              span.glyphicon.glyphicon-pencil
+            button.btn.btn-warning(type="button", data-color="#F0AD4E", data-toggle="tooltip", data-placement="top", title="#F0AD4E")
+              span.glyphicon.glyphicon-pencil
+            button.btn.btn-danger(type="button", data-color="#D9534F", data-toggle="tooltip", data-placement="top", title="#D9534F")
+              span.glyphicon.glyphicon-pencil
+            button.btn.btn-black.active(type="button", data-color="#000000", data-toggle="tooltip", data-placement="top", title="#000000")
+              span.glyphicon.glyphicon-pencil
+          #leads.btn-group.clearfix
+            button.btn.btn-default(type="button", data-lead="1", data-toggle="tooltip", data-placement="top", title="1px")
+              span Fine
+            button.btn.btn-default.active(type="button", data-lead="5", data-toggle="tooltip", data-placement="top", title="5px")
+              span Normal
+            button.btn.btn-default(type="button", data-lead="10", data-toggle="tooltip", data-placement="top", title="10px")
+              span Marker
+            button.btn.btn-default(type="button", data-lead="50", data-toggle="tooltip", data-placement="top", title="50px")
+              span Jumbo
+        #actions(role="actions")
+          if canvases.length
+            fieldset
+              .btn-group.clearfix
+                button#add.btn.btn-primary(type="button") Add to this Masterpiece!
+          fieldset#form(class="#{canvases.length ? 'disabled' : ''}")
+            .form-group
+              .input-group
+                span.input-group-addon.glyphicon.glyphicon-user
+                input#name.form-control(type="text", placeholder="Arteest Name")
+            .form-group
+              .input-group
+                span.input-group-addon.glyphicon.glyphicon-send
+                input#email.form-control(type="text", placeholder="Email This Masterpiece to a Friend (Optional)")
+            .btn-group.clearfix
+              button#save.action.btn.btn-primary(type="button", title="Fin!", data-loading-text="Reticulating Splines...") Submit your Masterpiece!

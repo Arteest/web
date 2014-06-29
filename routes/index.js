@@ -150,9 +150,9 @@ router.post('/save', function(req, res, next) {
             var options = {
                 from: "Arte of Arteest <draw@arteest.me>",
                 bcc: email,
-                subject: "A Wild Drawing Appears!",
-                text: "Hello! " + (name ? "@"+name : "An Arteest") + " would like you to complete this drawing. Simply follow this link to get started: http://www.arteest.me/draw/" + doc._id + ".",
-                html: "<p>Hello!</p><p>" + (name ? "@"+name : "An Arteest") + " would like you to complete a drawing.</p><p>Simply click the following link to get started: <a href='http://www.arteest.me/draw/" + doc._id + "'>http://www.arteest.me/draw/" + doc._id + "</a>.</p>"
+                subject: "A Wild Drawing Appears",
+                text: "Bonjour, " + (name ? "@"+name : "An Arteest") + " would like you to complete a drawing. Simply follow this link to get started: http://www.arteest.me/draw/" + doc._id + ". À Bientôt!",
+                html: "<p>Bonjour,<br /><br /></p><p>" + (name ? "@"+name : "An Arteest") + " would like you to complete a drawing.<br /><br />Simply click the following link to get started: <a href='http://www.arteest.me/draw/" + doc._id + "'>http://www.arteest.me/draw/" + doc._id + "</a><br /><br /></p><p>À Bientôt!<br />Arte of Arteest</p>"
             }
 
             req.smtp.sendMail(options, function(err) {

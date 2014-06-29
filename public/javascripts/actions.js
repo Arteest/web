@@ -77,12 +77,11 @@
         base.add = function(context) {
             $(context).closest('fieldset').remove(); // Hide add button
 
-            // Insert new canvas
             var template = $('#template-canvas').html();
-            var container = $(template).appendTo('#canvases');
-            var canvas = $(container).find('canvas');
-            var prev = $(container).prev().find('canvas').get(0); // Find previous canvas
-            
+            var prev = $('canvas').last().get(0);
+            $(prev).parent().after(template); // Insert at end
+            var canvas = $('canvas').last().get(0);
+
             $(canvas).data('prev-id', $(prev).data('canvas')._id); // Set this prev id to id of previous canvas
             var blankCanvas = $(canvas).arteest_draw({
                 width: $(canvas).width(),
@@ -98,8 +97,12 @@
             // Allow form submission
             $('#form').removeClass('disabled');
 
-            // Animate to new canvas
-            $('#canvases').animate({ scrollLeft: $(canvas).offset().left }, 'slow');
+            // Animate to new canvas + action
+            var canvasesWidth = 0;
+            $('#canvases li').each(function() {
+                canvasesWidth += $(this).width();
+            });
+            $('#canvases').animate({ scrollLeft: canvasesWidth }, 'slow');
         };
 
         base.init();
