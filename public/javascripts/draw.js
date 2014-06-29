@@ -45,6 +45,7 @@
                 $.each(base.strokes, function() {
                     this.x *= base.el.width / originalWidth;
                     this.y *= base.el.height / originalHeight;
+                    this.l *= base.el.width / originalWidth;
                 });
 
                 base.play();
