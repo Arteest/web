@@ -48,7 +48,7 @@
                     this.l *= base.el.width / originalWidth;
                 });
 
-                base.play();
+                base.forward(); // base.play(); // Used to play slowly but this is such a time suck
             } else {
                 // Start with a clean canvas
                 base.unlock();                

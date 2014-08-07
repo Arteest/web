@@ -155,6 +155,11 @@ router.post('/save', function(req, res, next) {
                 html: "<p>Bonjour,<br /><br /></p><p>" + (name ? "@"+name : "An Arteest") + " would like you to complete a drawing.<br /><br />Simply click the following link to get started: <a href='http://www.arteest.me/draw/" + doc._id + "'>http://www.arteest.me/draw/" + doc._id + "</a><br /><br /></p><p>À Bientôt!<br />Arte of Arteest</p>"
             }
 
+            // 1 upgrade to latest nodemailer 1.0
+            // 2 upgrade all code here to new nodemailer
+            // 3 make it so you send to someone, not bcc
+            // 4 make that a function that is fired off and immediately return artwork save (who cares if it didn't send the email right)
+
             req.smtp.sendMail(options, function(err) {
                 if(err) {
                     res.send({
